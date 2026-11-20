@@ -177,11 +177,20 @@ export const CinematicScroll: React.FC = () => {
     /* ------------------------- carregamento ------------------------ */
     const wanted = (): number[] => {
       const list: number[] = [targetIndex];
+      // Carrega primeiro a janela imediata em torno do frame atual
       for (let k = 1; k <= set.ahead; k++) {
         if (targetIndex + k < total) list.push(targetIndex + k);
         if (k <= set.behind && targetIndex - k >= 0) list.push(targetIndex - k);
       }
-      for (let i = 0; i < total; i++) list.push(i); // restante, em segundo plano
+      // Em seguida, frames âncora a cada 8 frames (para garantir saltos suaves rápidos)
+      for (let i = 0; i < total; i += 8) {
+        list.push(i);
+      }
+      list.push(total - 1);
+      // Por fim, preenche o restante em background
+      for (let i = 0; i < total; i++) {
+        list.push(i);
+      }
       return list;
     };
 
